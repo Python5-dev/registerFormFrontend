@@ -1,11 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { FormEvent, useState } from "react";
+import { FaEye } from "react-icons/fa6";
+import { FaEyeLowVision } from "react-icons/fa6";
+
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e:FormEvent<HTMLFormElement>):void => {
     e.preventDefault();
     // Frontend-only and no actual login functionality
     console.log("Logging in with:", { email, password });
@@ -32,17 +36,22 @@ function Login() {
             </div>
 
             <div className="my-6">
-              <label htmlFor="password" className="formLabel">
-                Password
-              </label>
+            <label htmlFor="password" className="formLabel">
+              Password
+            </label>
+            <div className='relative flex items-center'>
               <input
-                type="password"
-                id="password"
+                type={showPassword ? "text": "password"}
+                name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-            </div>
+              <button type="button" onClick={() => setShowPassword(showPassword ? false : true)} className="eyeButton">
+                {showPassword ? <FaEyeLowVision /> : <FaEye />}
+              </button>
+            </div>      
+          </div>
 
             <button type="submit" className="formButton">
               Login
