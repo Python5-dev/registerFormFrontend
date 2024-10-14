@@ -15,7 +15,7 @@ function Register(){
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleInput = (e:any):void => {
+  const handleInput = (e) => {
     const name = e.target.name;
     const value = e.target.value;
 
@@ -25,7 +25,7 @@ function Register(){
     })
   }
 
-  const handleSubmit = (e:any):void => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     // Frontend-only and no actual register functionality
     console.log("Registering in with:", user);
