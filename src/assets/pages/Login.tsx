@@ -9,7 +9,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (e:FormEvent<HTMLFormElement>):void => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     // Frontend-only and no actual login functionality
     console.log("Logging in with:", { email, password });
