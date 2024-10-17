@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { message } from 'antd';
-import { validateEmail, validatePassword } from '../validate';
+import { validateEmail, validatePassword } from "../validate";
 
 const Register = () => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -35,13 +35,13 @@ const Register = () => {
         content: "All fields are requierd",
       })
     }
-    if(!validateEmail(user.email)) {
+    if(!validateEmail(user.email) && user.email != "") {
       setError({
         ...error,
         email: "Email is not valid",
       })
     }
-    if(!validatePassword(user.password)) {
+    if(!validatePassword(user.password) && user.password != "") {
       setError({
         ...error,
         Password: "Password should be contain letter, number and special character"
