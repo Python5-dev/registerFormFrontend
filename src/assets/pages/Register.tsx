@@ -1,69 +1,26 @@
 "use client";
 
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { message } from 'antd';
-import { validateEmail, validatePassword } from "../validate";
+import { useFormik } from 'formik';
+import registerSchema from "../schemas";
 
 const Register = () => {
-  const [messageApi, contextHolder] = message.useMessage();
-  const [user, setUser] = useState({
+  const initialValues = {
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
-  });
-  const [error, setError] = useState({
-    email: "",
-    Password: "",
-  });
-
-  const handleInput = (e:any) => {
-    const name = e.target.name;
-    const value = e.target.value;
-
-    setUser({
-      ...user,
-      [name]: value
-    })
   }
-
-  const handleError = () => {
-    if(!(user.username && user.email && user.password && user.confirmPassword)) {
-      messageApi.open({
-        type: "error",
-        content: "All fields are requierd",
-      })
+  const {values, errors, touched, handleBlur, handleChange, handleSubmit} = useFormik({
+    initialValues: initialValues,
+    validationSchema: registerSchema,
+    onSubmit: (values) => {
+      console.log("Registering in with:", values);
     }
-    if(!validateEmail(user.email) && user.email != "") {
-      setError({
-        ...error,
-        email: "Email is not valid",
-      })
-    }
-    if(!validatePassword(user.password) && user.password != "") {
-      setError({
-        ...error,
-        Password: "Password should be contain letter, number and special character"
-      })
-    }
-    if (user.confirmPassword != "" && user.password !== user.confirmPassword) {
-      messageApi.open({
-        type: "error",
-        content: "Password and Confirm Password are not equal",
-      })
-    }
-  }
-
-  const handleSubmit = async (e:any) => {
-    e.preventDefault();
-    handleError();
-    console.log("Registering in with:", user);
-  };
+  })
 
   return (
     <>
-    {contextHolder}
       <div className="screenMiddleDiv">
         <div className="formDiv">
           <form onSubmit={handleSubmit}>
@@ -75,9 +32,11 @@ const Register = () => {
               <input
                 type="text"
                 name="username"
-                value={user.username}
-                onChange={handleInput}
+                value={values.username}
+                onChange={handleChange}
+                onBlur={handleBlur}
               />
+              { errors.username && touched.username ? <p className="formError">{errors.username}</p> : null }
             </div>
 
             <div className='my-6'>
@@ -87,10 +46,11 @@ const Register = () => {
               <input
                 type="text"
                 name="email"
-                value={user.email}
-                onChange={handleInput}
+                value={values.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
               />
-              <p className='text-xs text-red-600 ml-2'>{error.email}</p>
+              { errors.email && touched.email ? <p className="formError">{errors.email}</p> : null }
             </div>
 
             <div className="my-6">
@@ -100,10 +60,11 @@ const Register = () => {
                 <input
                   type="password"
                   name="password"
-                  value={user.password}
-                  onChange={handleInput}
+                  value={values.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                 />
-                <p className='text-xs text-red-600 ml-2'>{error.Password}</p>
+                { errors.password && touched.password ? <p className="formError">{errors.password}</p> : null }
             </div>
 
             <div className="my-6">
@@ -113,9 +74,11 @@ const Register = () => {
                 <input
                   type="password"
                   name="confirmPassword"
-                  value={user.confirmPassword}
-                  onChange={handleInput}
+                  value={values.confirmPassword}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                 />
+                { errors.confirmPassword && touched.confirmPassword ? <p className="formError">{errors.confirmPassword}</p> : null }
             </div>
 
             <button type="submit" className="formButton">
