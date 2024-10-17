@@ -1,21 +1,24 @@
 "use client";
 
 import { useState } from 'react';
-import { FaEye } from "react-icons/fa6";
-import { FaEyeLowVision } from "react-icons/fa6";
 import { Link } from 'react-router-dom';
+import { message } from 'antd';
+import { validateEmail, validatePassword } from '../validate';
 
-function Register(){
+const Register = () => {
+  const [messageApi, contextHolder] = message.useMessage();
   const [user, setUser] = useState({
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState({
+    email: "",
+    Password: "",
+  });
 
-  const handleInput = (e) => {
+  const handleInput = (e:any) => {
     const name = e.target.name;
     const value = e.target.value;
 
@@ -25,88 +28,106 @@ function Register(){
     })
   }
 
-  const handleSubmit = (e) => {
+  const handleError = () => {
+    if(!(user.username && user.email && user.password && user.confirmPassword)) {
+      messageApi.open({
+        type: "error",
+        content: "All fields are requierd",
+      })
+    }
+    if(!validateEmail(user.email)) {
+      setError({
+        ...error,
+        email: "Email is not valid",
+      })
+    }
+    if(!validatePassword(user.password)) {
+      setError({
+        ...error,
+        Password: "Password should be contain letter, number and special character"
+      })
+    }
+    if (user.confirmPassword != "" && user.password !== user.confirmPassword) {
+      messageApi.open({
+        type: "error",
+        content: "Password and Confirm Password are not equal",
+      })
+    }
+  }
+
+  const handleSubmit = async (e:any) => {
     e.preventDefault();
-    // Frontend-only and no actual register functionality
+    handleError();
     console.log("Registering in with:", user);
   };
 
   return (
-    <div className="screenMiddleDiv">
-      <div className="formDiv">
-        <form onSubmit={handleSubmit}>
-          <h2 className="text-center">Register</h2>
-          <div>
-            <label htmlFor="username" className="formLabel">
-              Username
-            </label>
-            <input
-              type="text"
-              name="username"
-              value={user.username}
-              onChange={handleInput}
-              required
-            />
-          </div>
-
-          <div className='my-6'>
-            <label htmlFor="email" className="formLabel">
-              Email Address
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={user.email}
-              onChange={handleInput}
-              required
-            />
-          </div>
-
-          <div className="my-6">
-            <label htmlFor="password" className="formLabel">
-              Password
-            </label>
-            <div className='relative flex items-center'>
+    <>
+    {contextHolder}
+      <div className="screenMiddleDiv">
+        <div className="formDiv">
+          <form onSubmit={handleSubmit}>
+            <h2 className="text-center">Register</h2>
+            <div>
+              <label htmlFor="username" className="formLabel">
+                Username
+              </label>
               <input
-                type={showPassword ? "text": "password"}
-                name="password"
-                value={user.password}
+                type="text"
+                name="username"
+                value={user.username}
                 onChange={handleInput}
-                required
               />
-              <button type="button" onClick={() => setShowPassword(showPassword ? false : true)} className="eyeButton">
-                {showPassword ? <FaEyeLowVision /> : <FaEye />}
-              </button>
-            </div>      
-          </div>
-
-          <div className="my-6">
-            <label htmlFor="confirmPassword" className="formLabel">
-              Confirm Password
-            </label>
-            <div className='relative flex items-center'>
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                name="confirmPassword"
-                value={user.confirmPassword}
-                onChange={handleInput}
-                required
-              />
-              <button type="button" onClick={() => setShowConfirmPassword(showConfirmPassword ? false : true)} className="eyeButton">
-              {showConfirmPassword ? <FaEyeLowVision /> : <FaEye />}
-              </button>
             </div>
-          </div>
 
-          <button type="submit" className="formButton">
-            Register
-          </button>
-          <div className='text-center mt-3'>
-            Already have an account? <Link to="/login" className='text-sm hover:underline'>Login</Link>
-          </div>
-        </form>
+            <div className='my-6'>
+              <label htmlFor="email" className="formLabel">
+                Email Address
+              </label>
+              <input
+                type="text"
+                name="email"
+                value={user.email}
+                onChange={handleInput}
+              />
+              <p className='text-xs text-red-600 ml-2'>{error.email}</p>
+            </div>
+
+            <div className="my-6">
+              <label htmlFor="password" className="formLabel">
+                Password
+              </label>
+                <input
+                  type="password"
+                  name="password"
+                  value={user.password}
+                  onChange={handleInput}
+                />
+                <p className='text-xs text-red-600 ml-2'>{error.Password}</p>
+            </div>
+
+            <div className="my-6">
+              <label htmlFor="confirmPassword" className="formLabel">
+                Confirm Password
+              </label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={user.confirmPassword}
+                  onChange={handleInput}
+                />
+            </div>
+
+            <button type="submit" className="formButton">
+              Register
+            </button>
+            <div className='text-center mt-3'>
+              Already have an account? <Link to="/login" className='text-sm hover:underline'>Login</Link>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
