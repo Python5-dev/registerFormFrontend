@@ -8,4 +8,4 @@ const registerSchema = Yup.object({
 
 })
 
-export default registerSchema;
+export { registerSchema };

@@ -1,8 +1,9 @@
-"use client";
-
 import { Link } from 'react-router-dom';
 import { useFormik } from 'formik';
-import registerSchema from "../schemas";
+import { registerSchema } from "../schemas";
+import axios from 'axios';
+import { Slide, ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Register = () => {
   const initialValues = {
@@ -14,16 +15,25 @@ const Register = () => {
   const {values, errors, touched, handleBlur, handleChange, handleSubmit} = useFormik({
     initialValues: initialValues,
     validationSchema: registerSchema,
-    onSubmit: (values) => {
-      console.log("Registering in with:", values);
-    }
-  })
+    onSubmit: async (values, action) => {
+      try{
+        const res = await axios.post("http://127.0.0.1:8000/register", values);
+        console.log(res);
+        if(res.status === 201) {
+          toast.success("Registration Successfull");
+        }
+      } catch (error) {
+        toast.error("Registration Failed")
+      }
+      action.resetForm();
+    },
+  });
 
   return (
     <>
       <div className="screenMiddleDiv">
         <div className="formDiv">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} method='POST'>
             <h2 className="text-center">Register</h2>
             <div>
               <label htmlFor="username" className="formLabel">
@@ -89,6 +99,7 @@ const Register = () => {
             </div>
           </form>
         </div>
+        <ToastContainer position='top-right' theme='colored' transition={Slide}/>
       </div>
     </>
   );
