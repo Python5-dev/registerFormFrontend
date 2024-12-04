@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { registerSchema } from "../schemas";
+import axios from 'axios';
+import { message } from 'antd';
 
 const Register = () => {
+  const [messageApi, contextHolder] = message.useMessage();
   const initialValues = {
     username: "",
     email: "",
@@ -13,13 +16,28 @@ const Register = () => {
   const {values, errors, touched, handleChange, handleSubmit, handleBlur} = useFormik({
     initialValues: initialValues,
     validationSchema: registerSchema,
-    onSubmit: async (values) => {
-      console.log(values);
+    onSubmit: async (values, action) => {
+      try {
+        const res = await axios.post("http://127.0.0.1:8000/register/", values)
+        if (res.status === 201) {
+          messageApi.open({
+            type: "success",
+            content: res.data.message
+          })
+        }
+      } catch (error:any) {
+        messageApi.open({
+          type: "error",
+          content: error.response.data.error
+        })
+      }
+      action.resetForm()
     }
   });
 
   return (
     <>
+      {contextHolder}
       <div className="screenMiddleDiv">
         <div className="formDiv">
           <form onSubmit={handleSubmit}>

@@ -1,4 +1,4 @@
-# Login Form Frontend Only
+# Register Form Frontend Only
 
 You can use below link to know how to create this app
 
