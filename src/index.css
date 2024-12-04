@@ -65,6 +65,9 @@ button:hover {
   .formButton {
     @apply w-full py-2 px-4;
   }
+  .formError {
+    @apply text-xs text-red-600 ml-1;
+  }
 }
 @layer base {
   h1 {
